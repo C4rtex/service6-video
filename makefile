@@ -42,6 +42,12 @@ sales:
 run:
 	go run apis/services/sales/main.go | go run apis/tooling/logfmt/main.go
 
+help:
+	go run apis/services/sales/main.go --help
+
+version:
+	go run apis/services/sales/main.go --version
+
 # ==============================================================================
 # Modules support
 tidy:
