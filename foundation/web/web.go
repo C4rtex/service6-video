@@ -3,10 +3,11 @@ package web
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"github.com/google/uuid"
 	"net/http"
 	"os"
+	"syscall"
 	"time"
 )
 
@@ -32,6 +33,10 @@ func NewApp(shutdown chan os.Signal, mw ...MidHandler) *App {
 	}
 }
 
+func (a *App) SignalShutdown() {
+	a.shutdown <- syscall.SIGTERM
+}
+
 // HandleFunc sets a handler function for a given HTTP method and path pair
 // to the application server mid.
 func (a *App) HandleFunc(pattern string, handler Handler, mw ...MidHandler) {
@@ -46,10 +51,25 @@ func (a *App) HandleFunc(pattern string, handler Handler, mw ...MidHandler) {
 		ctx := setValues(r.Context(), &v)
 
 		if err := handler(ctx, w, r); err != nil {
-			fmt.Println(err)
+			if validateError(err) {
+				a.SignalShutdown()
+				return
+			}
 			return
 		}
 	}
 
 	a.ServeMux.HandleFunc(pattern, h)
+}
+
+func validateError(err error) bool {
+
+	switch {
+	case errors.Is(err, syscall.EPIPE):
+		return false
+	case errors.Is(err, syscall.ECONNRESET):
+		return false
+	}
+
+	return true
 }
