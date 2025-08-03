@@ -6,6 +6,7 @@ require (
 	github.com/ardanlabs/conf/v3 v3.8.0
 	github.com/arl/statsviz v0.7.0
 	github.com/go-json-experiment/json v0.0.0-20250714165856-be8212f5270d
+	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/google/uuid v1.6.0
 )
 
