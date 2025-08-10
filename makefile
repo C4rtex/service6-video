@@ -68,6 +68,12 @@ curl-error:
 curl-panic:
 	curl -il -X GET http://localhost:3000/testpanic
 
+# admin token
+# export TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6IjU0YmIyMTY1LTcxZTEtNDFhNi1hZjNlLTdkYTRhMGUxZTJjMSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzZXJ2aWNlIHByb2plY3QiLCJzdWIiOiJhODY1MDVlMS1mYjc3LTRjYmUtODFlNS1iODNmNTgwNjlhMWIiLCJleHAiOjE3ODYzOTY4NjksImlhdCI6MTc1NDg2MDg2OSwiUm9sZXMiOlsiQURNSU4iXX0.ejHR7O03tcANc1ry0elqlVJKfVvoIruDZSmBFyT7Fys_vcpIQLhHSJyiXsgk0biHCsMyi4YXQn-M9j8u32tRLk2VOTDgZt6O8JhTJ2ZWw6lXZZsuNVWX-gGQJit9c6drvmZ6pTFJY_xgLoo2-d25pIv3jhrp_7VaD3JYLruSaBXhmhOAMGFUU4meQc9nbbWzZK4I_DlkP5iA5hLwSoWMpLAjyzbfxUT6TcVQte9_IzQiLYaHnVrzdeP6ZeIYz-6dRDf2_wO3pUWKLV6gtSVO9EN6Bb3E2oq-KB36ttiIFFRngyGMArYmZIG5Q61DcTq-xzOBh6i_lLFqSJjZDLuwbA
+curl-auth:
+	curl -il \
+	-H "Authorization: Bearer ${TOKEN}" "http://localhost:3000/testauth"
+
 admin:
 	go run apis/tooling/admin/main.go
 
