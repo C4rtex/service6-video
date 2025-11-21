@@ -4,6 +4,7 @@ go 1.24.4
 
 require (
 	github.com/ardanlabs/conf/v3 v3.8.0
+	github.com/ardanlabs/darwin/v3 v3.3.1
 	github.com/arl/statsviz v0.7.0
 	github.com/go-json-experiment/json v0.0.0-20250714165856-be8212f5270d
 	github.com/golang-jwt/jwt/v4 v4.5.2
