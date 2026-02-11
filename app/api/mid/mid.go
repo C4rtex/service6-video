@@ -3,7 +3,7 @@ package mid
 import (
 	"context"
 	"errors"
-	"github.com/ardanlabs/service/business/api/auth"
+	"github.com/ardanlabs/service/app/api/auth"
 	"github.com/google/uuid"
 )
 

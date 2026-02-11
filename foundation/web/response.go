@@ -33,3 +33,15 @@ func Respond(ctx context.Context, w http.ResponseWriter, data any, statusCode in
 
 	return nil
 }
+
+/*func validateError(err error) error {
+
+	switch {
+	case errors.Is(err, syscall.EPIPE):
+		return nil
+	case errors.Is(err, syscall.ECONNRESET):
+		return nil
+	}
+
+	return err
+}*/

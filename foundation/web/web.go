@@ -3,11 +3,8 @@ package web
 
 import (
 	"context"
-	"errors"
 	"github.com/google/uuid"
 	"net/http"
-	"os"
-	"syscall"
 	"time"
 )
 
@@ -20,21 +17,21 @@ type Handler func(ctx context.Context, w http.ResponseWriter, r *http.Request) e
 // data/logic on this App struct.
 type App struct {
 	*http.ServeMux
-	shutdown chan os.Signal
-	mw       []MidHandler
+	log Logger
+	mw  []MidHandler
 }
+
+// Logger represents a function that will be called to add information
+// to the logs.
+type Logger func(ctx context.Context, msg string, v ...any)
 
 // NewApp creates an App value that handle a set of routes for the application.
-func NewApp(shutdown chan os.Signal, mw ...MidHandler) *App {
+func NewApp(log Logger, mw ...MidHandler) *App {
 	return &App{
 		ServeMux: http.NewServeMux(),
-		shutdown: shutdown,
+		log:      log,
 		mw:       mw,
 	}
-}
-
-func (a *App) SignalShutdown() {
-	a.shutdown <- syscall.SIGTERM
 }
 
 // HandleFunc sets a handler function for a given HTTP method and path pair
@@ -51,10 +48,7 @@ func (a *App) HandleFunc(pattern string, handler Handler, mw ...MidHandler) {
 		ctx := setValues(r.Context(), &v)
 
 		if err := handler(ctx, w, r); err != nil {
-			if validateError(err) {
-				a.SignalShutdown()
-				return
-			}
+			a.log(ctx, "web", "ERROR", err)
 			return
 		}
 	}
@@ -74,25 +68,10 @@ func (a *App) HandleFuncNoMiddleware(pattern string, handler Handler, mw ...MidH
 		ctx := setValues(r.Context(), &v)
 
 		if err := handler(ctx, w, r); err != nil {
-			if validateError(err) {
-				a.SignalShutdown()
-				return
-			}
+			a.log(ctx, "web", "ERROR", err)
 			return
 		}
 	}
 
 	a.ServeMux.HandleFunc(pattern, h)
-}
-
-func validateError(err error) bool {
-
-	switch {
-	case errors.Is(err, syscall.EPIPE):
-		return false
-	case errors.Is(err, syscall.ECONNRESET):
-		return false
-	}
-
-	return true
 }
