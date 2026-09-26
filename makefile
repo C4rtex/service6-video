@@ -53,13 +53,13 @@ auth:
 # 	$ openssl rsa -pubout -in private.pem -out public.pem
 
 run:
-	go run apis/services/sales/main.go | go run apis/tooling/logfmt/main.go
+	go run api/cmd/services/sales/main.go | go run api/cmd/tooling/logfmt/main.go
 
 help:
-	go run apis/services/sales/main.go --help
+	go run api/cmd/services/sales/main.go --help
 
 version:
-	go run apis/services/sales/main.go --version
+	go run api/cmd/services/sales/main.go --version
 
 curl-test:
 	curl -il -X GET http://localhost:3000/test
@@ -95,7 +95,7 @@ curl-auth2:
 	-H "Authorization: Bearer ${TOKEN}" "http://localhost:6000/auth/authenticate"
 
 admin:
-	go run apis/tooling/admin/main.go
+	go run api/cmd/tooling/admin/main.go
 
 # ==============================================================================
 # Modules support
@@ -155,10 +155,10 @@ dev-update: build dev-load dev-restart
 dev-update-apply: build dev-load dev-apply
 
 dev-logs:
-	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | go run apis/tooling/logfmt/main.go -service=$(SALES_APP)
+	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) --all-containers=true -f --tail=100 --max-log-requests=6 | go run api/cmd/tooling/logfmt/main.go -service=$(SALES_APP)
 
 dev-logs-auth:
-	kubectl logs --namespace=$(NAMESPACE) -l app=$(AUTH_APP) --all-containers=true -f --tail=100 | go run apis/tooling/logfmt/main.go
+	kubectl logs --namespace=$(NAMESPACE) -l app=$(AUTH_APP) --all-containers=true -f --tail=100 | go run api/cmd/tooling/logfmt/main.go
 
 dev-logs-init:
 	kubectl logs --namespace=$(NAMESPACE) -l app=$(SALES_APP) -f --tail=100 -c init-migrate-seed
